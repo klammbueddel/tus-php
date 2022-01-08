@@ -324,8 +324,10 @@ class File
                 $bytes = $this->write($output, $data, self::CHUNK_SIZE);
 
                 $this->offset += $bytes;
-
-                $this->cache->set($key, ['offset' => $this->offset]);
+                
+                $contents = $this->cache->get($key, true);
+                $contents = ['offset' => $this->offset] + $contents;
+                $this->cache->set($key, $contents);
 
                 if ($this->offset > $totalBytes) {
                     throw new OutOfRangeException('The uploaded file is corrupt.');
